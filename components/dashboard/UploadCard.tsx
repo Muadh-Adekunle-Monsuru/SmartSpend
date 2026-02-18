@@ -27,10 +27,11 @@ export default function UploadCard() {
 		setError(null);
 		setLoading(true);
 		try {
-			await uploadStatementAction(formData);
-			toast.success(
-				'Analysis started! You can track progress in your dashboard.',
-			);
+			await uploadStatementAction(formData).then(() => {
+				toast.success(
+					'Analysis started! You can track progress in your dashboard.',
+				);
+			});
 		} catch (err: any) {
 			setError(err.message);
 		} finally {

@@ -20,8 +20,21 @@ export async function uploadStatementAction(formData: FormData) {
 
 		if (password) {
 			console.log('Using QPDF to decrypt statement...');
-			// QPDF is significantly more powerful than pdf-lib for bank encryptions
-			await decrypt({ input: tempInputPath, password, output: tempOutputPath });
+			try {
+				await decrypt({
+					input: tempInputPath,
+					password,
+					output: tempOutputPath,
+				});
+			} catch (err: any) {
+				// Check if it's just a warning about a "damaged" file
+				if (err.message.includes('operation succeeded with warnings')) {
+					console.warn('QPDF warning ignored: proceeding with upload.');
+				} else {
+					// If it's a real failure (wrong password), throw it
+					throw err;
+				}
+			}
 		} else {
 			// If no password, just use the original file
 			await fs.copyFile(tempInputPath, tempOutputPath);
@@ -30,10 +43,15 @@ export async function uploadStatementAction(formData: FormData) {
 		const decryptedBuffer = await fs.readFile(tempOutputPath);
 
 		// Proceed to Cloudinary with the decryptedBuffer
+		console.log('Starting Cloudinary upload...');
 		const uploadResult = (await new Promise((resolve, reject) => {
 			cloudinary.uploader
 				.upload_stream(
-					{ resource_type: 'raw', folder: 'bank_statements' },
+					{
+						resource_type: 'raw',
+						folder: 'bank_statements',
+						public_id: `${Date.now()}-statement.pdf`,
+					},
 					(error, result) => (error ? reject(error) : resolve(result)),
 				)
 				.end(decryptedBuffer);

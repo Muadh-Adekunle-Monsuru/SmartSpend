@@ -1,29 +1,64 @@
 import { inngest } from './client';
 
 export const processStatement = inngest.createFunction(
-	{ id: 'process-bank-statement' },
+	{ id: 'process-bank-statement', retries: 2 },
 	{ event: 'statement/uploaded' },
 	async ({ event, step }) => {
-		const { fileUrl, userId } = event.data;
+		const { fileUrl } = event.data;
 
-		// Step 1: Extract PDF to Structured JSON
-		const rawData = await step.run('extract-pdf-data', async () => {
-			// call Document AI or LlamaParse here
-			return { transactions: [] };
+		// 1. INITIATE PARSE JOB
+		const jobId = await step.run('initiate-llamaparse', async () => {
+			const response = await fetch(
+				'https://api.cloud.llamaindex.ai/api/v2/parse',
+				{
+					method: 'POST',
+					headers: {
+						'Authorization': `Bearer ${process.env.LLAMA_CLOUD_API_KEY}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						source_url: fileUrl,
+						tier: 'cost_effective',
+						version: 'latest',
+					}),
+				},
+			);
+			const data = await response.json();
+			return data.id;
 		});
 
-		// Step 2: Agentic Deduplication (Clue-finding)
-		const cleanData = await step.run('deduplicate-transactions', async () => {
-			// AI logic to find repeating patterns
-			return rawData.transactions;
-		});
+		// 2. POLLING LOOP (Wait for Completion)
+		let status = 'PENDING';
+		let markdownOutput = '';
 
-		// Step 3: AI Categorization
-		const categorized = await step.run('categorize-spending', async () => {
-			// Use description to map categories
-			return cleanData;
-		});
+		while (status !== 'COMPLETED' && status !== 'FAILED') {
+			await step.sleep('polling-delay', '10s'); // Wait 3 seconds between checks
 
-		return { status: 'success', count: categorized.length };
+			const result = await step.run('check-parse-status', async () => {
+				const response = await fetch(
+					`https://api.cloud.llamaindex.ai/api/v2/parse/${jobId}?expand=markdown`,
+					{
+						headers: {
+							'Authorization': `Bearer ${process.env.LLAMA_CLOUD_API_KEY}`,
+						},
+					},
+				);
+				return await response.json();
+			});
+
+			status = result.job.status;
+			if (status === 'COMPLETED') {
+				markdownOutput = result.markdown.pages
+					.map((p: any) => p.markdown)
+					.join('\n\n');
+			}
+		}
+
+		if (status === 'FAILED') {
+			throw new Error('LlamaParse failed to process the document.');
+		}
+
+		// 3. NEXT STEP: Hand off to the Cleaning Agent
+		return { status: 'SUCCESS', dataLength: markdownOutput.length };
 	},
 );
