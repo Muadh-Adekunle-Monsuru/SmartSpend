@@ -6,7 +6,6 @@ import { decrypt } from 'node-qpdf2';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
-
 export async function uploadStatementAction(formData: FormData) {
 	const file = formData.get('statement') as File;
 	const password = formData.get('password') as string;

@@ -27,10 +27,15 @@ export default function UploadCard() {
 		setError(null);
 		setLoading(true);
 		try {
-			await uploadStatementAction(formData).then(() => {
-				toast.success(
-					'Analysis started! You can track progress in your dashboard.',
-				);
+			await uploadStatementAction(formData).then((response) => {
+				if (response.success) {
+					toast.success(
+						'Analysis started! You can track progress in your dashboard.',
+					);
+				} else {
+					setError(`${response.error}`);
+					toast.error('Processing failed, try again!');
+				}
 			});
 		} catch (err: any) {
 			setError(err.message);
@@ -39,7 +44,7 @@ export default function UploadCard() {
 		}
 	}
 	return (
-		<Card className='max-w-sm shadow-md '>
+		<Card className='max-w-sm shadow-lg '>
 			<CardHeader>
 				<CardTitle>Upload your bank-statement</CardTitle>
 				<CardDescription>

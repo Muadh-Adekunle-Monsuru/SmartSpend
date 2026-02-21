@@ -13,7 +13,7 @@ import React from 'react';
 
 export default function Page() {
 	return (
-		<div className='px-20 flex w-full h-screen justify-center items-center bg-linear-to-t from-[#f5f7fa] to-[#c3cfe2]'>
+		<div className='px-20 flex w-full h-screen justify-center items-center bg-linear-to-b from-[#f5f7fa] to-[#c3cfe2]'>
 			<UploadCard />
 		</div>
 	);

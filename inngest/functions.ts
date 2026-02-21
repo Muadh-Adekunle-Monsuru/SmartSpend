@@ -1,4 +1,25 @@
 import { inngest } from './client';
+import { generateText, Output } from 'ai';
+import { z } from 'zod';
+import { TransactionSchema } from '@/lib/utils';
+import { GoogleGenerativeAI, SchemaType, Schema } from '@google/generative-ai';
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+const schema: Schema = {
+	type: SchemaType.ARRAY,
+	description: 'List of extracted bank transactions',
+	items: {
+		type: SchemaType.OBJECT,
+		properties: {
+			date: { type: SchemaType.STRING },
+			description: { type: SchemaType.STRING },
+			amount: { type: SchemaType.NUMBER },
+			type: { type: SchemaType.STRING },
+			category: { type: SchemaType.STRING },
+		},
+		required: ['date', 'description', 'amount', 'type', 'category'],
+	},
+} as const;
 
 export const processStatement = inngest.createFunction(
 	{ id: 'process-bank-statement', retries: 2 },
@@ -57,8 +78,40 @@ export const processStatement = inngest.createFunction(
 		if (status === 'FAILED') {
 			throw new Error('LlamaParse failed to process the document.');
 		}
+		const model = genAI.getGenerativeModel({
+			model: 'gemini-2.5-flash',
+			generationConfig: {
+				responseMimeType: 'application/json',
+				responseSchema: schema,
+			},
+		});
 
-		// 3. NEXT STEP: Hand off to the Cleaning Agent
+		// 3. Handing off to the Cleaning Agent
+		const cleaningAgent = async (markdown: string) => {
+			const prompt = `
+   				 You are an expert Nigerian financial analyst. 
+    				Convert the following bank statement markdown into a clean JSON array of transactions.
+    
+   					 Processing Rules:
+    				1. Standardize descriptions: e.g., 'FIP:MB:ECO/ADEKUNLE' becomes 'Adekunle'.
+    			2. Identify Categories: 'BAP:CD' is usually Utilities/Airtime; 'VAT' or 'Charges' are Fees.
+    			3. Ignore balance rows (Opening/Closing balance).
+    
+    			Data:
+			    ${markdownOutput}
+  				`;
+
+			const result = await model.generateContent(prompt);
+			return JSON.parse(result.response.text());
+		};
+
+		const cleanTransactions = await step.run(
+			'clean-and-categorize',
+			async () => {
+				return await cleaningAgent(markdownOutput);
+			},
+		);
+
 		return { status: 'SUCCESS', dataLength: markdownOutput.length };
 	},
 );
