@@ -6,6 +6,8 @@ import { decrypt } from 'node-qpdf2';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
+import { nanoid } from 'nanoid';
+
 export async function uploadStatementAction(formData: FormData) {
 	const file = formData.get('statement') as File;
 	const password = formData.get('password') as string;
@@ -18,7 +20,6 @@ export async function uploadStatementAction(formData: FormData) {
 		await fs.writeFile(tempInputPath, Buffer.from(arrayBuffer));
 
 		if (password) {
-			console.log('Using QPDF to decrypt statement...');
 			try {
 				await decrypt({
 					input: tempInputPath,
@@ -27,8 +28,8 @@ export async function uploadStatementAction(formData: FormData) {
 				});
 			} catch (err: any) {
 				// Check if it's just a warning about a "damaged" file
-				if (err.message.includes('operation succeeded with warnings')) {
-					console.warn('QPDF warning ignored: proceeding with upload.');
+				if (err?.includes('operation succeeded with warnings')) {
+					console.warn('QPDF warning:', err);
 				} else {
 					// If it's a real failure (wrong password), throw it
 					throw err;
@@ -62,7 +63,7 @@ export async function uploadStatementAction(formData: FormData) {
 		// Trigger Inngest
 		await inngest.send({
 			name: 'statement/uploaded',
-			data: { fileUrl: uploadResult.secure_url, userId: 'user_123' },
+			data: { fileUrl: uploadResult.secure_url, sessionId: nanoid() },
 		});
 
 		return { success: true };
@@ -70,7 +71,7 @@ export async function uploadStatementAction(formData: FormData) {
 		console.error('Final Decryption Failure:', err);
 		return {
 			success: false,
-			error: 'Unable to unlock PDF. Please verify the password.',
+			error: 'Unable to unlock PDF. Please try again.',
 		};
 	}
 }

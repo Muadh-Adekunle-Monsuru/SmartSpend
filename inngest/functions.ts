@@ -3,6 +3,9 @@ import { generateText, Output } from 'ai';
 import { z } from 'zod';
 import { TransactionSchema } from '@/lib/utils';
 import { GoogleGenerativeAI, SchemaType, Schema } from '@google/generative-ai';
+import { fetchMutation } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const schema: Schema = {
@@ -25,7 +28,7 @@ export const processStatement = inngest.createFunction(
 	{ id: 'process-bank-statement', retries: 2 },
 	{ event: 'statement/uploaded' },
 	async ({ event, step }) => {
-		const { fileUrl } = event.data;
+		const { fileUrl, sessionId } = event.data;
 
 		// 1. INITIATE PARSE JOB
 		const jobId = await step.run('initiate-llamaparse', async () => {
@@ -111,6 +114,13 @@ export const processStatement = inngest.createFunction(
 				return await cleaningAgent(markdownOutput);
 			},
 		);
+
+		const uploadToData = await step.run('upload-to-database', async () => {
+			return await fetchMutation(api.convexFunctions.saveCategorized, {
+				sessionId,
+				transactions: cleanTransactions,
+			});
+		});
 
 		return { status: 'SUCCESS', dataLength: markdownOutput.length };
 	},

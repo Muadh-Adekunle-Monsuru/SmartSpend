@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Raleway } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
+import { ConvexClientProvider } from './ConvexClientProvider';
 
 const raleway = Raleway({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -30,8 +31,8 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				{children}
-				<Toaster />
+				<ConvexClientProvider>{children}</ConvexClientProvider>
+				<Toaster position='top-center' />
 			</body>
 		</html>
 	);
