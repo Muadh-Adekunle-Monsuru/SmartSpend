@@ -12,11 +12,14 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { uploadStatementAction } from '@/actions/server';
 import { toast } from 'sonner';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { nanoid } from 'nanoid';
 
-export default function UploadCard() {
+export default function UploadCard({ sessionId }: { sessionId: string }) {
 	const [error, setError] = useState<String | null>(null);
 	const [loading, setLoading] = useState(false);
-
+	const createDbRecord = useMutation(api.convexFunctions.updateRecordBySession);
 	async function handleSubmit(formData: FormData) {
 		const file = formData.get('statement') as File;
 
@@ -27,11 +30,12 @@ export default function UploadCard() {
 		setError(null);
 		setLoading(true);
 		try {
-			await uploadStatementAction(formData).then((response) => {
+			await uploadStatementAction(formData, sessionId).then((response) => {
 				if (response.success) {
 					toast.success(
 						'Analysis started! You can track progress in your dashboard.',
 					);
+					createDbRecord({ newStatus: 'Submitted', sessionId });
 				} else {
 					setError(`${response.error}`);
 					toast.error('Processing failed, try again!');

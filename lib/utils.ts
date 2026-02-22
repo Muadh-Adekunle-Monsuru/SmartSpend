@@ -14,7 +14,7 @@ export const TransactionSchema = z.object({
 			"Cleaned merchant name, e.g., 'MTN Airtime' instead of 'BAP:CD/MTN'",
 		),
 	amount: z.number(),
-	type: z.enum(['debit', 'credit']),
+	type: z.string(),
 	category: z
 		.string()
 		.describe('Food, Transport, Subscriptions, Transfer, Salary, or Income'),

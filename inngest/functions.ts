@@ -51,6 +51,10 @@ export const processStatement = inngest.createFunction(
 			return data.id;
 		});
 
+		await fetchMutation(api.convexFunctions.updateRecordBySession, {
+			newStatus: 'Parsing',
+			sessionId,
+		});
 		// 2. POLLING LOOP (Wait for Completion)
 		let status = 'PENDING';
 		let markdownOutput = '';
@@ -81,6 +85,12 @@ export const processStatement = inngest.createFunction(
 		if (status === 'FAILED') {
 			throw new Error('LlamaParse failed to process the document.');
 		}
+
+		await fetchMutation(api.convexFunctions.updateRecordBySession, {
+			newStatus: 'Parsed',
+			sessionId,
+		});
+
 		const model = genAI.getGenerativeModel({
 			model: 'gemini-2.5-flash',
 			generationConfig: {
@@ -107,6 +117,11 @@ export const processStatement = inngest.createFunction(
 			const result = await model.generateContent(prompt);
 			return JSON.parse(result.response.text());
 		};
+
+		await fetchMutation(api.convexFunctions.updateRecordBySession, {
+			newStatus: 'Cleaning',
+			sessionId,
+		});
 
 		const cleanTransactions = await step.run(
 			'clean-and-categorize',

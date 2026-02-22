@@ -8,7 +8,10 @@ import path from 'path';
 import os from 'os';
 import { nanoid } from 'nanoid';
 
-export async function uploadStatementAction(formData: FormData) {
+export async function uploadStatementAction(
+	formData: FormData,
+	sessionId: string,
+) {
 	const file = formData.get('statement') as File;
 	const password = formData.get('password') as string;
 
@@ -63,7 +66,7 @@ export async function uploadStatementAction(formData: FormData) {
 		// Trigger Inngest
 		await inngest.send({
 			name: 'statement/uploaded',
-			data: { fileUrl: uploadResult.secure_url, sessionId: nanoid() },
+			data: { fileUrl: uploadResult.secure_url, sessionId },
 		});
 
 		return { success: true };
