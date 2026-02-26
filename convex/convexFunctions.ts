@@ -15,6 +15,7 @@ export const saveCategorized = mutation({
 		if (existingRecord) {
 			await ctx.db.patch(existingRecord._id, {
 				details: args.transactions,
+				status: 'Complete',
 			});
 
 			return { success: true, action: 'updated', id: existingRecord._id };

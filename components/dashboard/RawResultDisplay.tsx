@@ -44,7 +44,7 @@ export default function RawResultDisplay({
 							{/* Right side: Amount (Colored by credit/debit) */}
 							<div
 								className={`font-semibold text-sm ${
-									transaction.type === 'credit'
+									transaction.type === 'Credit'
 										? 'text-green-600'
 										: 'text-red-600'
 								}`}

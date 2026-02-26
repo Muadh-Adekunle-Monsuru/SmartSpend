@@ -35,7 +35,7 @@ export default function UploadCard({ sessionId }: { sessionId: string }) {
 					toast.success(
 						'Analysis started! You can track progress in your dashboard.',
 					);
-					createDbRecord({ newStatus: 'Submitted', sessionId });
+					// createDbRecord({ newStatus: 'Submitted', sessionId });
 				} else {
 					setError(`${response.error}`);
 					toast.error('Processing failed, try again!');

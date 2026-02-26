@@ -13,10 +13,12 @@ export default function DashboardComponent({
 	const data = useQuery(api.convexFunctions.getRecordBySession, { sessionId });
 	return (
 		<div>
-			{data?.status && data?.status !== 'Uploaded' && (
+			{data?.status && data?.status !== 'Complete' && (
 				<LoadingState status={data?.status || ''} />
 			)}
-			<RawResultDisplay rawResult={data?.details} />
+			{data?.status == 'Complete' && (
+				<RawResultDisplay rawResult={data?.details} />
+			)}
 			{!data?.status && <UploadCard sessionId={sessionId} />}
 		</div>
 	);

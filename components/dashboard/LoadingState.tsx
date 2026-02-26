@@ -4,15 +4,21 @@ import loading_animation from '../../public/loading_animation.json';
 
 export default function LoadingState({ status }: { status: string }) {
 	return (
-		<div>
-			<div className='size-72'>
+		<div className='flex flex-col items-center justify-center text-xl font-semibold text-muted-foreground'>
+			<div className='size-80'>
 				<Lottie animationData={loading_animation} />
 			</div>
-			{status == 'Submitted' && <p>Reading your file...</p>}
-			{status == 'Parsing' && <p>Crunching the numbers...</p>}
-			{status == 'Parsed' && <p>Organizing your financial data...</p>}
+			{status == 'Submitted' && (
+				<p className='animate-pulse'>Crunching the numbers...</p>
+			)}
+			{status == 'Parsing' && <p className='animate-pulse'></p>}
+			{status == 'Parsed' && (
+				<p className='animate-pulse'>Organizing your financial data...</p>
+			)}
 			{/* <p>Making sense of your expenses...</p> */}
-			{status == 'Cleaning' && <p>Tidying up your transactions...</p>}
+			{status == 'Cleaning' && (
+				<p className='animate-pulse'>Tidying up your transactions...</p>
+			)}
 		</div>
 	);
 }
