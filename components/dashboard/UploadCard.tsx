@@ -16,7 +16,13 @@ import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { nanoid } from 'nanoid';
 
-export default function UploadCard({ sessionId }: { sessionId: string }) {
+export default function UploadCard({
+	sessionId,
+	isError,
+}: {
+	sessionId: string;
+	isError: boolean;
+}) {
 	const [error, setError] = useState<String | null>(null);
 	const [loading, setLoading] = useState(false);
 	const createDbRecord = useMutation(api.convexFunctions.updateRecordBySession);
@@ -74,11 +80,17 @@ export default function UploadCard({ sessionId }: { sessionId: string }) {
 						type='password'
 						placeholder='Enter the PDF Password'
 					/>
-					{error && <p className='text-red-500 text-sm'>{error}</p>}
 					<Button type='submit' className='w-full' disabled={loading}>
 						{loading ? 'Processing...' : 'Submit Statement'}
 					</Button>
 				</form>
+				{error && <p className='text-red-500 text-sm'>{error}</p>}
+				{isError && (
+					<div className='text-red-600 font-medium text-center mt-4 space-y-1'>
+						<p>We couldn't process your document.</p>
+						<p>If the problem continues, upload a different file.</p>
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);

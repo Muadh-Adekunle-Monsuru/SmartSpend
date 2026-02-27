@@ -25,16 +25,92 @@ const schema: Schema = {
 			amount: { type: SchemaType.NUMBER },
 			type: { type: SchemaType.STRING },
 			category: { type: SchemaType.STRING },
+			balance: { type: SchemaType.NUMBER },
 		},
-		required: ['date', 'description', 'amount', 'type', 'category'],
+		required: ['date', 'description', 'amount', 'type', 'category', 'balance'],
 	},
 } as const;
 
+const agent_prompt = `
+You are an expert Nigerian financial data analyst and transaction parser.
+
+Your task is to convert the provided Nigerian bank statement (in markdown format) into a clean, structured JSON array of transactions.
+
+Output Requirements:
+
+Return ONLY valid JSON.
+
+The output must be an array of objects.
+
+Each transaction object must contain:
+
+date (ISO format: YYYY-MM-DD)
+
+description (cleaned and standardized)
+
+amount (number; negative for debits, positive for credits)
+
+type ("debit" or "credit")
+
+category (standardized spending category)
+
+balance (number; running/current balance after the transaction): !!!important
+
+Processing Rules:
+
+Description Cleaning & Standardization
+
+Remove bank-specific prefixes and codes.
+
+Extract meaningful merchant or recipient names.
+
+Example transformations:
+
+"FIP:MB:ECO/ADEKUNLE" → "Adekunle"
+
+"POS 12345 SHOPRITE IKEJA" → "Shoprite Ikeja"
+
+Remove transaction IDs, reference codes, and redundant metadata.
+
+Category Identification (Nigeria-Specific Context)
+
+"BAP:CD" → Utilities / Airtime
+
+"VAT" or "Charges" → Bank Fees
+
+"POS" → Shopping / Retail
+
+"ATM" → Cash Withdrawal
+
+"TRF" or "TRANSFER" → Transfer
+
+Telecom providers (MTN, Airtel, Glo, 9mobile) → Airtime/Data
+
+If unclear, infer the most reasonable category based on description context.
+
+Amounts & Balance
+
+Ensure debits are negative values.
+
+Ensure credits are positive values.
+
+Always return the correct running balance for each transaction.
+
+Data Integrity
+
+Do not hallucinate missing transactions.
+
+Do not omit any valid transaction.
+
+If a field is missing in the input, infer only when logically certain.
+`;
 export const processStatement = inngest.createFunction(
 	{ id: 'process-bank-statement', retries: 2 },
 	{ event: 'statement/uploaded' },
 	async ({ event, step }) => {
 		const { fileUrl, sessionId, password } = event.data;
+
+		await updateStatus('Submitted', sessionId);
 		try {
 			const processedFileUrl = await step.run(
 				'download-and-decrypt',
@@ -156,14 +232,12 @@ export const processStatement = inngest.createFunction(
 					throw new Error('Parse failed');
 				}
 
-				await step.sleep('wait-before-retry', '10s');
+				await step.sleep('wait-before-retry', '15s');
 			}
 
 			const markdownOutput = parseResult.markdown.pages
 				.map((p: any) => p.markdown)
 				.join('\n\n');
-
-			await updateStatus('Parsed', sessionId);
 
 			const model = genAI.getGenerativeModel({
 				model: 'gemini-2.5-flash',
@@ -176,14 +250,7 @@ export const processStatement = inngest.createFunction(
 			// // 3. Handing off to the Cleaning Agent
 			const cleaningAgent = async (markdown: string) => {
 				const prompt = `
-				 You are an expert Nigerian financial analyst.
-					Convert the following bank statement markdown into a clean JSON array of transactions.
-
-					 Processing Rules:
-					1. Standardize descriptions: e.g., 'FIP:MB:ECO/ADEKUNLE' becomes 'Adekunle'.
-				2. Identify Categories: 'BAP:CD' is usually Utilities/Airtime; 'VAT' or 'Charges' are Fees.
-				3. Ignore balance rows (Opening/Closing balance).
-
+				${agent_prompt} 
 				Data:
 			    ${markdown}
 				`;

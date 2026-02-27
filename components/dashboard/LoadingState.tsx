@@ -11,11 +11,10 @@ export default function LoadingState({ status }: { status: string }) {
 			{status == 'Submitted' && (
 				<p className='animate-pulse'>Crunching the numbers...</p>
 			)}
-			{status == 'Parsing' && <p className='animate-pulse'></p>}
-			{status == 'Parsed' && (
+			{status == 'Parsing' && (
 				<p className='animate-pulse'>Organizing your financial data...</p>
 			)}
-			{/* <p>Making sense of your expenses...</p> */}
+
 			{status == 'Cleaning' && (
 				<p className='animate-pulse'>Tidying up your transactions...</p>
 			)}

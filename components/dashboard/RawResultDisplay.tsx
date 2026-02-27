@@ -14,7 +14,7 @@ export default function RawResultDisplay({
 	rawResult?: Transaction[];
 }) {
 	return (
-		<Card className='w-full max-w-2xl max-h-80'>
+		<Card className='w-full max-w-2xl'>
 			<CardHeader>
 				<CardTitle>Spendings</CardTitle>
 				<CardDescription>Your recent transactions</CardDescription>
@@ -44,13 +44,12 @@ export default function RawResultDisplay({
 							{/* Right side: Amount (Colored by credit/debit) */}
 							<div
 								className={`font-semibold text-sm ${
-									transaction.type === 'Credit'
+									transaction.type.toLowerCase() === 'credit'
 										? 'text-green-600'
 										: 'text-red-600'
 								}`}
 							>
-								{transaction.type === 'credit' ? '+' : ''}
-								{/* Formats the number with commas (e.g., 50,000) */}₦
+								{transaction.type === 'credit' ? '+' : ''}₦
 								{Math.abs(transaction.amount).toLocaleString(undefined, {
 									minimumFractionDigits: 2,
 									maximumFractionDigits: 2,

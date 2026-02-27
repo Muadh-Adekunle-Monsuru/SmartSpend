@@ -29,7 +29,7 @@ export default function RootLayout({
 	return (
 		<html lang='en' className={raleway.variable}>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${geistSans.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<ConvexClientProvider>{children}</ConvexClientProvider>
 				<Toaster position='top-center' />

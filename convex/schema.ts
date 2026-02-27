@@ -12,6 +12,7 @@ export default defineSchema({
 					date: v.string(),
 					description: v.string(),
 					type: v.string(),
+					balance: v.optional(v.number()),
 				}),
 			),
 		),
