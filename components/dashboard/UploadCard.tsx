@@ -25,7 +25,6 @@ export default function UploadCard({
 }) {
 	const [error, setError] = useState<String | null>(null);
 	const [loading, setLoading] = useState(false);
-	const createDbRecord = useMutation(api.convexFunctions.updateRecordBySession);
 	async function handleSubmit(formData: FormData) {
 		const file = formData.get('statement') as File;
 
@@ -41,7 +40,6 @@ export default function UploadCard({
 					toast.success(
 						'Analysis started! You can track progress in your dashboard.',
 					);
-					// createDbRecord({ newStatus: 'Submitted', sessionId });
 				} else {
 					setError(`${response.error}`);
 					toast.error('Processing failed, try again!');
@@ -54,7 +52,7 @@ export default function UploadCard({
 		}
 	}
 	return (
-		<Card className='max-w-sm shadow-lg '>
+		<Card className='max-w-sm shadow-lg mx-auto justify-self-auto'>
 			<CardHeader>
 				<CardTitle>Upload your bank-statement</CardTitle>
 				<CardDescription>
@@ -84,6 +82,7 @@ export default function UploadCard({
 						{loading ? 'Processing...' : 'Submit Statement'}
 					</Button>
 				</form>
+				{loading && <p>Loading...</p>}
 				{error && <p className='text-red-500 text-sm'>{error}</p>}
 				{isError && (
 					<div className='text-red-600 font-medium text-center mt-4 space-y-1'>

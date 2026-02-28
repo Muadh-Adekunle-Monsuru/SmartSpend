@@ -13,7 +13,7 @@ export default async function Page() {
 	}
 
 	return (
-		<div className='p-20 flex flex-col w-full h-screen bg-linear-to-b from-[#f5f7fa] to-[#c3cfe2]'>
+		<div className='lg:p-20 flex flex-col justify-center  w-full h-screen bg-linear-to-b from-[#fdfcfb] to-[#e2d1c3]'>
 			<DashboardComponent sessionId={sessionId} />
 		</div>
 	);

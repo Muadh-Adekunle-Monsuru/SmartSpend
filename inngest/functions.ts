@@ -101,6 +101,8 @@ Data Integrity
 Do not hallucinate missing transactions.
 
 Do not omit any valid transaction.
+If a balance column exists in the data, extract it exactly.
+If balance cannot be determined, return 0 instead of omitting the field.
 
 If a field is missing in the input, infer only when logically certain.
 `;

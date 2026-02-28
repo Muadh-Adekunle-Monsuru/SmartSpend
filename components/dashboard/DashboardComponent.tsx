@@ -14,7 +14,7 @@ export default function DashboardComponent({
 	const loadingStates = ['Parsing', 'Submitted', 'Cleaning'];
 	const isErrororEmpty = !status || status == 'Failed';
 	return (
-		<div>
+		<div className='w-full'>
 			{loadingStates.includes(status) && (
 				<LoadingState status={data?.status || ''} />
 			)}
