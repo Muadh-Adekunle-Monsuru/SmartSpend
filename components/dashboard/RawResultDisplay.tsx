@@ -16,7 +16,7 @@ export default function RawResultDisplay({
 	return (
 		<Card className='w-full max-w-2xl'>
 			<CardHeader>
-				<CardTitle>Spendings</CardTitle>
+				<CardTitle>Transactions</CardTitle>
 				<CardDescription>Your recent transactions</CardDescription>
 			</CardHeader>
 
@@ -42,18 +42,26 @@ export default function RawResultDisplay({
 							</div>
 
 							{/* Right side: Amount (Colored by credit/debit) */}
-							<div
-								className={`font-semibold text-sm ${
-									transaction.type.toLowerCase() === 'credit'
-										? 'text-green-600'
-										: 'text-red-600'
-								}`}
-							>
-								{transaction.type === 'credit' ? '+' : ''}₦
-								{Math.abs(transaction.amount).toLocaleString(undefined, {
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2,
-								})}
+							<div className='space-y-1'>
+								<div
+									className={`flex font-semibold text-sm ${
+										transaction.type.toLowerCase() === 'credit'
+											? 'text-green-600'
+											: 'text-red-600'
+									}`}
+								>
+									<span>{transaction.type === 'credit' ? '+' : ''}</span>
+									<span>
+										₦
+										{Math.abs(transaction.amount).toLocaleString(undefined, {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2,
+										})}
+									</span>
+								</div>
+								<div className='text-xs text-gray-500'>
+									{transaction.balance}
+								</div>
 							</div>
 						</div>
 					))

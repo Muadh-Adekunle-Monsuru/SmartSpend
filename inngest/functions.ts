@@ -283,6 +283,12 @@ export const processStatement = inngest.createFunction(
 			});
 
 			await updateStatus('Complete', sessionId);
+
+			await inngest.send({
+				name: 'extract/additional',
+				data: { rawResults: markdownOutput, cleanTransactions, sessionId },
+			});
+
 			return { status: 'SUCCESS' };
 		} catch (err) {
 			await updateStatus('Failed', sessionId);

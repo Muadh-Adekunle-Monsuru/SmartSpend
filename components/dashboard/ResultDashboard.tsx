@@ -7,11 +7,17 @@ import LargestDebit from './LargestDebit';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import LargestCredit from './LargestIncome';
 import GroupByCategory from './GroupByCategory';
+import OpeningBalance from './OpeningBalance';
+import ClosingBalance from './ClosingBalance';
+import { BalanceChart } from './BalanceChart';
+import Insights from './Insights';
 
 export default function ResultDashboard({
 	rawResult,
+	insights,
 }: {
 	rawResult?: Transaction[];
+	insights?: { description: string; title: string }[];
 }) {
 	const sorted =
 		rawResult?.sort(
@@ -29,11 +35,15 @@ export default function ResultDashboard({
 			>
 				<Masonry>
 					<RawResultDisplay rawResult={rawResult} />
+					<GroupByCategory rawResult={rawResult} />
 					<TotalExpenses rawResult={rawResult} />
 					<TotalIncome rawResult={rawResult} />
+					<BalanceChart rawResult={rawResult} />
 					<LargestDebit rawResult={rawResult} />
+					<OpeningBalance rawResult={rawResult} />
 					<LargestCredit rawResult={rawResult} />
-					<GroupByCategory rawResult={rawResult} />
+					{insights && insights?.length > 0 && <Insights insights={insights} />}
+					<ClosingBalance rawResult={rawResult} />
 				</Masonry>
 			</ResponsiveMasonry>
 		</div>

@@ -51,6 +51,35 @@ export const updateRecordBySession = mutation({
 	},
 });
 
+export const setInsights = mutation({
+	args: {
+		sessionId: v.string(),
+		insights: v.array(v.any()),
+	},
+	handler: async (ctx, args) => {
+		const existingRecord = await ctx.db
+			.query('transactions')
+			.withIndex('by_sessionId', (q) => q.eq('sessionId', args.sessionId))
+			.first();
+
+		if (existingRecord) {
+			await ctx.db.patch(existingRecord._id, {
+				insights: args.insights,
+			});
+
+			return { success: true, action: 'updated', id: existingRecord._id };
+		}
+
+		const newId = await ctx.db.insert('transactions', {
+			sessionId: args.sessionId,
+			insights: args.insights,
+			status: 'Complete',
+		});
+
+		return { success: true, action: 'created', id: newId };
+	},
+});
+
 export const getRecordBySession = query({
 	args: {
 		sessionId: v.string(),

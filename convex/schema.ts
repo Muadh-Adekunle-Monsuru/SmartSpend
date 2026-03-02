@@ -16,6 +16,14 @@ export default defineSchema({
 				}),
 			),
 		),
+		insights: v.optional(
+			v.array(
+				v.object({
+					title: v.string(),
+					description: v.string(),
+				}),
+			),
+		),
 		status: v.string(),
 	}).index('by_sessionId', ['sessionId']),
 });

@@ -18,6 +18,7 @@ export const TransactionSchema = z.object({
 	category: z
 		.string()
 		.describe('Food, Transport, Subscriptions, Transfer, Salary, or Income'),
+	balance: z.number().optional(),
 });
 
 export type Transaction = z.infer<typeof TransactionSchema>;

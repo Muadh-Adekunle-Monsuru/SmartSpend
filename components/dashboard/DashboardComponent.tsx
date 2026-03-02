@@ -18,7 +18,9 @@ export default function DashboardComponent({
 			{loadingStates.includes(status) && (
 				<LoadingState status={data?.status || ''} />
 			)}
-			{status == 'Complete' && <ResultDashboard rawResult={data?.details} />}
+			{status == 'Complete' && (
+				<ResultDashboard rawResult={data?.details} insights={data?.insights} />
+			)}
 			{isErrororEmpty && (
 				<UploadCard isError={status == 'Failed'} sessionId={sessionId} />
 			)}

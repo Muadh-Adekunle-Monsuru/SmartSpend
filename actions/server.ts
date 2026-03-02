@@ -12,20 +12,30 @@ export async function uploadStatementAction(
 ) {
 	const file = formData.get('statement') as File;
 	const password = formData.get('password') as string;
-
-	const tempInputPath = path.join(os.tmpdir(), `input-${Date.now()}.pdf`);
 	try {
 		const arrayBuffer = await file.arrayBuffer();
-		await fs.writeFile(tempInputPath, Buffer.from(arrayBuffer));
+		const buffer = Buffer.from(arrayBuffer);
 
-		const uploadResult = await cloudinary.uploader.upload(tempInputPath, {
-			resource_type: 'raw',
-			folder: 'bank_statements',
-		});
+		const uploadResult = (await new Promise((resolve, reject) => {
+			const uploadStream = cloudinary.uploader.upload_stream(
+				{
+					resource_type: 'raw',
+					folder: 'bank_statements',
+				},
+				(error, result) => {
+					if (error) {
+						reject(error);
+					} else {
+						resolve(result);
+					}
+				},
+			);
 
-		await Promise.all([fs.unlink(tempInputPath)]);
+			uploadStream.end(buffer);
+		})) as any;
 
 		// Trigger Inngest
+
 		await inngest.send({
 			name: 'statement/uploaded',
 			data: { fileUrl: uploadResult.secure_url, sessionId, password },
@@ -36,7 +46,8 @@ export async function uploadStatementAction(
 		console.error('Final Decryption Failure:', err);
 		return {
 			success: false,
-			error: 'Unable to unlock PDF. Please try again.',
+			error:
+				'Unable to upload PDF. Please try again with a smaller size document.',
 		};
 	}
 }

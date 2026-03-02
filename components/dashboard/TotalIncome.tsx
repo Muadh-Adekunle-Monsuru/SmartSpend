@@ -27,9 +27,9 @@ export default function TotalIncome({
 	return (
 		<Card className='w-full'>
 			<CardHeader>
-				<CardTitle>Total Expenses</CardTitle>
+				<CardTitle>Total Income</CardTitle>
 				<CardDescription>
-					From: {creditTransactions[0].date} t0{' '}
+					From: {creditTransactions[0].date} to{' '}
 					{creditTransactions[creditTransactions.length - 1].date}{' '}
 				</CardDescription>
 			</CardHeader>
