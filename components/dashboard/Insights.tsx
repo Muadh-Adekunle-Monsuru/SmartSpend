@@ -14,22 +14,19 @@ interface InsightsProps {
 
 export default function Insights({ insights }: InsightsProps) {
 	return (
-		<Card className='w-full max-w-2xl bg-gradient-to-br from-slate-50 to-white shadow-sm border-slate-200'>
-			<CardHeader className='pb-4'>
-				<div className='flex items-center gap-2'>
-					{/* A subtle icon to indicate AI/Smart features */}
-					<Sparkles className='w-5 h-5 text-indigo-600' />
-					<CardTitle className='text-xl text-slate-900'>
-						Smart Insights
-					</CardTitle>
-				</div>
-				<CardDescription className='text-slate-500'>
-					Personalized analysis based on your recent transaction data.
-				</CardDescription>
-			</CardHeader>
+		<div className='border-4 border-black p-6 bg-white'>
+			<div className='flex items-center gap-2'>
+				<Sparkles className='w-5 h-5 text-indigo-600' />
+				<h2 className='text-xs font-black tracking-widest uppercase mb-6 border-b-4 border-black pb-4 text-black'>
+					Smart Insights
+				</h2>
+			</div>
 
-			<CardContent className='space-y-6'>
-				{/* Handle the loading/empty state gracefully */}
+			<p className='text-xs text-gray-700 uppercase tracking-wider mb-6'>
+				Personalized analysis based on your recent transaction data.
+			</p>
+
+			<div className='space-y-6'>
 				{!insights || insights.length === 0 ? (
 					<div className='flex flex-col items-center justify-center py-8 text-slate-400 space-y-3'>
 						<Sparkles className='w-6 h-6 animate-pulse text-indigo-300' />
@@ -40,36 +37,35 @@ export default function Insights({ insights }: InsightsProps) {
 				) : (
 					/* Map through the insights with a clean numbered layout */
 					insights.map((insight, index) => (
-						<div key={index} className='flex gap-4 items-start'>
-							{/* Number indicator */}
-							<div className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs'>
-								{index + 1}
-							</div>
-
-							{/* Text content */}
-							<div className='space-y-1 mt-0.5'>
-								<h4 className='text-sm font-semibold leading-none text-slate-900'>
+						<div key={index} className=' pl-4 pb-4 last:pb-0'>
+							<div className='flex items-center gap-3 mb-2'>
+								<div className='w-6 h-6 border-2 border-orange-600 flex items-center justify-center flex-shrink-0 bg-orange-100'>
+									<span className='text-xs font-black text-orange-700'>
+										{index + 1}
+									</span>
+								</div>
+								<h4 className='text-sm font-black uppercase text-black'>
 									{insight.title}
 								</h4>
-								<p className='text-sm text-slate-600 leading-snug'>
-									{insight.description}
-								</p>
 							</div>
+							<p className='text-xs text-gray-700 leading-relaxed'>
+								{insight.description}
+							</p>
 						</div>
 					))
 				)}
-			</CardContent>
+			</div>
 
-			<CardFooter className='bg-slate-50/80 px-6 py-4 border-t border-slate-100 mt-2'>
-				<div className='flex items-start gap-2 text-xs text-slate-500'>
-					<Info className='w-4 h-4 shrink-0 mt-0.5 text-slate-400' />
-					<p>
+			<div className='mt-6 pt-6 border-t-2 border-gray-300'>
+				<p className='text-xs text-gray-600 flex items-start gap-2'>
+					<span className='text-lg leading-none mt-0.5'>ℹ</span>
+					<span>
 						Kindly note that these are AI-generated insights to help you track
-						your spending, and should not be taken as professional financial
+						your spending and should not be taken as professional financial
 						advice.
-					</p>
-				</div>
-			</CardFooter>
-		</Card>
+					</span>
+				</p>
+			</div>
+		</div>
 	);
 }

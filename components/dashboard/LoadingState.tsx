@@ -1,9 +1,8 @@
-import React from 'react';
+'use client';
+
 import Lottie from 'lottie-react';
 import loading_animation from '../../public/loading_animation.json';
 
-// 1. Map your statuses to text and progress percentages
-// This makes it incredibly easy to add new steps later without cluttering the JSX
 const loadingStages: Record<string, { text: string; progress: number }> = {
 	Pending: { text: 'Preparing your file...', progress: 10 },
 	Submitted: { text: 'Crunching the numbers...', progress: 35 },
@@ -12,37 +11,47 @@ const loadingStages: Record<string, { text: string; progress: number }> = {
 	Completed: { text: 'Done! Loading dashboard...', progress: 100 },
 };
 
-export default function LoadingState({ status }: { status: string }) {
-	// 2. Safely grab the current stage, fallback to 'Pending' if the status is unknown
+export default function LoadingState({
+	status = 'Pending',
+}: {
+	status?: string;
+}) {
 	const currentStage = loadingStages[status] || loadingStages['Pending'];
 
 	return (
-		<div className='flex flex-col items-center justify-center w-full max-w-sm mx-auto p-6 space-y-8'>
-			{/* Lottie Animation (Slightly scaled down and given a subtle drop shadow) */}
-			<div className='w-56 h-56 drop-shadow-lg'>
+		<div className=' bg-amber-50 flex flex-col items-center justify-center p-6'>
+			<div className='w-56 h-56 mx-auto drop-shadow-lg'>
 				<Lottie animationData={loading_animation} loop={true} />
 			</div>
 
-			<div className='w-full space-y-4 text-center'>
-				{/* The active message */}
-				<p className='text-lg font-medium text-slate-800 animate-pulse'>
+			<div className='text-center mb-8'>
+				<p className='text-lg md:text-xl font-black uppercase tracking-wide text-black mb-2'>
 					{currentStage.text}
 				</p>
+			</div>
 
-				{/* The Progress Bar Track */}
-				<div className='w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200 shadow-inner'>
-					{/* The Animated Progress Fill */}
+			<div className='mb-4 w-full'>
+				<div className='w-full h-4 bg-white border-4 border-black overflow-hidden mb-4'>
 					<div
-						className='h-full bg-indigo-600 rounded-full transition-all duration-700 ease-in-out'
+						className='h-full bg-orange-600 transition-all duration-700 ease-in-out'
 						style={{ width: `${currentStage.progress}%` }}
 					/>
 				</div>
 
-				{/* Optional: The hard number so users know it isn't stuck */}
-				<p className='text-sm font-semibold text-slate-400'>
-					{currentStage.progress}%
-				</p>
+				<div className='text-center'>
+					<p className='text-2xl font-black text-black'>
+						{currentStage.progress}%
+					</p>
+				</div>
 			</div>
+
+			{/* Divider */}
+			<div className='my-8 border-t-2 border-black'></div>
+
+			{/* Info Text */}
+			<p className='text-xs font-black uppercase tracking-widest text-center text-gray-700'>
+				Processing your bank statement with AI
+			</p>
 		</div>
 	);
 }

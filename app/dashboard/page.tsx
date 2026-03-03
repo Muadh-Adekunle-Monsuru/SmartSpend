@@ -1,3 +1,4 @@
+import { DashboardHeader } from '@/components/DasboardHeader';
 import DashboardComponent from '@/components/dashboard/DashboardComponent';
 import LoadingComponent from '@/components/dashboard/DashboardComponent';
 import UploadCard from '@/components/dashboard/UploadCard';
@@ -13,7 +14,8 @@ export default async function Page() {
 	}
 
 	return (
-		<div className='lg:p-20 p-5 flex flex-col justify-center  w-full min-h-screen bg-linear-to-b from-[#fdfcfb] to-[#e2d1c3]'>
+		<div className=' flex flex-col min-h-screen bg-amber-50'>
+			<DashboardHeader />
 			<DashboardComponent sessionId={sessionId} />
 		</div>
 	);

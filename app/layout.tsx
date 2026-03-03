@@ -17,8 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'SmartSpend',
-	description: 'Understand your money, control your future.',
+	title: 'SmartSpend - AI-Powered Financial Dashboard',
+	description:
+		'Analyze your spending, get personalized insights, and master your finances with SmartSpend',
 };
 
 export default function RootLayout({
@@ -27,7 +28,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang='en' className={raleway.variable}>
+		<html lang='en' className='font-sans'>
 			<body
 				className={`${geistSans.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
 			>

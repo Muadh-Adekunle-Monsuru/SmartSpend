@@ -21,6 +21,7 @@ export default function UploadCard({
 }) {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [file, setFile] = useState<File | null>(null);
 
 	// 1. Change the parameter to accept the Form Event
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -43,9 +44,6 @@ export default function UploadCard({
 			const response = await uploadStatementAction(formData, sessionId);
 
 			if (response.success) {
-				toast.success(
-					'Analysis started! You can track progress in your dashboard.',
-				);
 			} else {
 				setError(`${response.error}`);
 				toast.error('Processing failed, try again!');
@@ -56,51 +54,74 @@ export default function UploadCard({
 			setLoading(false);
 		}
 	}
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files?.[0]) {
+			setFile(e.target.files[0]);
+		}
+	};
 
 	return (
-		<Card className='max-w-sm shadow-lg mx-auto justify-self-auto'>
-			<CardHeader>
-				<CardTitle>Upload your bank statement</CardTitle>
-				<CardDescription>
+		<div className='w-full max-w-xl border-4 border-black bg-white p-8'>
+			<div className='mb-8'>
+				<h2 className='text-3xl md:text-4xl font-black tracking-tight mb-3'>
+					Upload your bank statement
+				</h2>
+				<p className='text-sm text-gray-700 leading-relaxed'>
 					Our system will process your statement asynchronously using AI agents.
-				</CardDescription>
-			</CardHeader>
-			<CardContent className='space-y-5'>
-				{/* 5. Change 'action' to 'onSubmit' */}
-				<form onSubmit={handleSubmit} className='space-y-4'>
-					<Label className='mb-1' htmlFor='statement'>
-						Statement (PDF)
-					</Label>
-					<Input
-						id='statement'
-						name='statement'
-						accept='application/pdf'
-						type='file'
-						required
-					/>
-					<Label htmlFor='password'>Statement Password (If any)</Label>
-					<Input
-						id='password'
-						name='password'
-						type='password'
-						placeholder='Enter the PDF Password'
-					/>
-					<Button type='submit' className='w-full' disabled={loading}>
-						{loading ? 'Processing...' : 'Submit Statement'}
-					</Button>
-				</form>
+				</p>
+			</div>
 
-				<Button
-					className='w-full'
-					variant='ghost'
-					onClick={async () => {
-						// You might want to add loading state for this demo button too!
-						await useDemoData(sessionId);
-					}}
-					disabled={loading}
-				>
-					Use Demo Data
-				</Button>
+			<div className='space-y-5'>
+				{/* 5. Change 'action' to 'onSubmit' */}
+				<form onSubmit={handleSubmit}>
+					<div className='mb-6 border-b-4 border-black pb-6'>
+						<label className='text-xs font-black uppercase tracking-widest mb-3 block text-black'>
+							Statement (PDF)
+						</label>
+						<input
+							id='statement'
+							name='statement'
+							accept='application/pdf'
+							type='file'
+							required
+							className=' w-full border-4 border-black p-4 cursor-pointer hover:bg-gray-50 transition-colors'
+						/>
+					</div>
+					<div className='mb-8 border-b-4 border-black pb-6'>
+						<label
+							htmlFor='password'
+							className='text-xs font-black uppercase tracking-widest mb-3 block text-black'
+						>
+							Statement Password (If any)
+						</label>
+						<input
+							id='password'
+							name='password'
+							type='password'
+							placeholder='Enter the PDF Password'
+							className='w-full border-4 border-black bg-white px-4 py-3 text-sm font-black placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 focus:ring-offset-white'
+						/>
+					</div>
+					<div className='space-y-4'>
+						<button
+							type='submit'
+							className='w-full bg-red-600 border-4 border-black text-white font-black py-3 uppercase tracking-widest text-xs hover:bg-red-700 transition-all'
+							disabled={loading}
+						>
+							{loading ? 'Processing...' : 'Submit Statement'}
+						</button>
+						<button
+							className='w-full bg-white border-4 border-black text-black font-black py-3 uppercase tracking-widest text-xs hover:bg-gray-100 transition-all'
+							onClick={async () => {
+								setLoading(true);
+								await useDemoData(sessionId);
+							}}
+							disabled={loading}
+						>
+							Use Demo Data
+						</button>
+					</div>
+				</form>
 
 				{error && <p className='text-red-500 text-sm text-center'>{error}</p>}
 
@@ -112,7 +133,7 @@ export default function UploadCard({
 						</p>
 					</div>
 				)}
-			</CardContent>
-		</Card>
+			</div>
+		</div>
 	);
 }

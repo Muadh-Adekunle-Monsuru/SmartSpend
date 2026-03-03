@@ -25,24 +25,26 @@ export default function TotalIncome({
 	);
 
 	return (
-		<Card className='w-full'>
-			<CardHeader>
-				<CardTitle>Total Income</CardTitle>
-				<CardDescription>
-					From: {creditTransactions[0].date} to{' '}
-					{creditTransactions[creditTransactions.length - 1].date}{' '}
-				</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<p>{creditTransactions.length} Transactions</p>
-				<p className='text-xl font-bold text-green-500 '>
+		<div className='border-4 border-black p-6 bg-white'>
+			<h3 className='text-xs font-black tracking-widest uppercase mb-6 border-b-4 border-black pb-4 text-black'>
+				Total Income
+			</h3>
+			<p>
+				From: {creditTransactions[0].date} to{' '}
+				{creditTransactions[creditTransactions.length - 1].date}{' '}
+			</p>
+			<div className='space-y-2 mb-4'>
+				<p className='text-xs text-gray-700 font-black'>
+					{creditTransactions.length} Transactions
+				</p>
+				<p className='text-4xl font-black text-green-600 '>
 					₦
 					{Math.abs(expenses).toLocaleString(undefined, {
 						minimumFractionDigits: 2,
 						maximumFractionDigits: 2,
 					})}
 				</p>
-			</CardContent>
-		</Card>
+			</div>
+		</div>
 	);
 }
