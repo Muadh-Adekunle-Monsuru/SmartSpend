@@ -38,7 +38,13 @@ export async function uploadStatementAction(
 
 		await inngest.send({
 			name: 'statement/uploaded',
-			data: { fileUrl: uploadResult.secure_url, sessionId, password },
+			data: {
+				fileUrl: uploadResult.secure_url,
+				sessionId,
+				password,
+				publicId: uploadResult.public_id,
+				isDemo: false,
+			},
 		});
 
 		return { success: true };
@@ -56,5 +62,34 @@ export const updateStatus = async (status: string, sessionId: string) => {
 	await fetchMutation(api.convexFunctions.updateRecordBySession, {
 		newStatus: status,
 		sessionId,
+	});
+};
+
+export const deleteOnCloudinary = async (publicId: string) => {
+	try {
+		const deleteResult = await cloudinary.uploader.destroy(publicId, {
+			resource_type: 'raw', // This is required since it's a PDF/raw file
+		});
+
+		if (deleteResult.result === 'ok') {
+			console.log('File successfully deleted from Cloudinary');
+		} else {
+			console.warn('File deletion reported an issue:', deleteResult);
+		}
+	} catch (error) {
+		console.error('Failed to delete file from Cloudinary:', error);
+	}
+};
+
+export const useDemoData = async (sessionId: string) => {
+	await inngest.send({
+		name: 'statement/uploaded',
+		data: {
+			fileUrl:
+				'https://res.cloudinary.com/dzrkcnt5h/image/upload/v1772541563/Opay_kojjdf.pdf',
+			sessionId,
+			publicId: 'Opay_kojjdf',
+			isDemo: true,
+		},
 	});
 };

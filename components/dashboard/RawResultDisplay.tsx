@@ -59,8 +59,15 @@ export default function RawResultDisplay({
 										})}
 									</span>
 								</div>
-								<div className='text-xs text-gray-500'>
-									{transaction.balance}
+								<div className='text-xs text-gray-500 text-right'>
+									₦
+									{Math.abs(transaction.balance || 0).toLocaleString(
+										undefined,
+										{
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2,
+										},
+									)}
 								</div>
 							</div>
 						</div>

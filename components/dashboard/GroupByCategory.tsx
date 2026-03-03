@@ -2,11 +2,12 @@
 import { Transaction } from '@/lib/utils';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-
-import { Pie, PieChart } from 'recharts';
+import { Pie, PieChart, Cell } from 'recharts'; // Added Cell for individual coloring
 
 import {
 	ChartContainer,
+	ChartLegend,
+	ChartLegendContent,
 	ChartTooltip,
 	ChartTooltipContent,
 	type ChartConfig,
@@ -20,63 +21,38 @@ export default function GroupByCategory({
 	interface CategoryTotals {
 		[key: string]: number;
 	}
-	const groups = rawResult?.reduce((group: CategoryTotals, trans) => {
-		group[trans.category] = (group[trans.category] || 0) + trans.amount;
-		return group;
-	}, {});
 
-	const ChartData = Object.entries(groups as any).map((val) => {
+	const groups =
+		rawResult?.reduce((group: CategoryTotals, trans) => {
+			const category = trans.category || 'Uncategorized';
+			group[category] = (group[category] || 0) + Math.abs(trans.amount);
+			return group;
+		}, {}) || {};
+
+	const dynamicConfig: ChartConfig = {
+		value: { label: 'Amount' },
+	};
+
+	const chartData = Object.entries(groups).map(([category, value], index) => {
+		// Create a clean key for the config (camelCase or kebab-case)
+		const configKey = category.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+		// Cycle through the 5 default Shadcn chart colors
+		const colorIndex = (index % 5) + 1;
+
+		// Add to config dynamically
+		dynamicConfig[configKey] = {
+			label: category,
+			color: `var(--chart-${colorIndex})`,
+		};
+
 		return {
-			category: val[0],
-			value: Math.abs(val[1] as number),
+			category,
+			value,
+			fill: `var(--color-${configKey})`, // Shadcn uses --color-{key} based on config
+			browser: configKey,
 		};
 	});
-
-	const chartConfig = {
-		value: {
-			label: 'Amount',
-		},
-		internalTransfer: {
-			label: 'Internal Transfer',
-			color: 'var(--chart-1)',
-		},
-		utilities: {
-			label: 'Utilities',
-			color: 'var(--chart-2)',
-		},
-		savings: {
-			label: 'Savings',
-			color: 'var(--chart-3)',
-		},
-		transfer: {
-			label: 'Transfer',
-			color: 'var(--chart-4)',
-		},
-		shoppingRetail: {
-			label: 'Shopping/Retail',
-			color: 'var(--chart-5)',
-		},
-		income: {
-			label: 'Income',
-			color: 'var(--chart-1)',
-		},
-		bankFees: {
-			label: 'Bank Fees',
-			color: 'var(--chart-2)',
-		},
-		airtimeData: {
-			label: 'Airtime/Data',
-			color: 'var(--chart-3)',
-		},
-		giftPersonal: {
-			label: 'Gift/Personal',
-			color: 'var(--chart-4)',
-		},
-		businessIncome: {
-			label: 'Business Income',
-			color: 'var(--chart-5)',
-		},
-	} satisfies ChartConfig;
 
 	return (
 		<Card className='w-full flex flex-col'>
@@ -85,7 +61,7 @@ export default function GroupByCategory({
 			</CardHeader>
 			<CardContent className='flex-1 pb-0'>
 				<ChartContainer
-					config={chartConfig}
+					config={dynamicConfig}
 					className='mx-auto aspect-square max-h-[450px]'
 				>
 					<PieChart>
@@ -93,7 +69,17 @@ export default function GroupByCategory({
 							cursor={false}
 							content={<ChartTooltipContent hideLabel />}
 						/>
-						<Pie data={ChartData} dataKey='value' label nameKey='category' />
+						<Pie
+							data={chartData}
+							dataKey='value'
+							label
+							nameKey={'browser'}
+							strokeWidth={5}
+						/>
+						<ChartLegend
+							content={<ChartLegendContent nameKey='browser' />}
+							className='-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center'
+						/>
 					</PieChart>
 				</ChartContainer>
 			</CardContent>

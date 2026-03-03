@@ -11,6 +11,8 @@ import OpeningBalance from './OpeningBalance';
 import ClosingBalance from './ClosingBalance';
 import { BalanceChart } from './BalanceChart';
 import Insights from './Insights';
+import MostTransactionDay from './MostTransactionDay';
+import NigeriaTaxCalculator from './TaxCard';
 
 export default function ResultDashboard({
 	rawResult,
@@ -39,11 +41,13 @@ export default function ResultDashboard({
 					<TotalExpenses rawResult={rawResult} />
 					<TotalIncome rawResult={rawResult} />
 					<BalanceChart rawResult={rawResult} />
+					<MostTransactionDay rawResult={rawResult} />
 					<LargestDebit rawResult={rawResult} />
 					<OpeningBalance rawResult={rawResult} />
 					<LargestCredit rawResult={rawResult} />
 					{insights && insights?.length > 0 && <Insights insights={insights} />}
 					<ClosingBalance rawResult={rawResult} />
+					<NigeriaTaxCalculator />
 				</Masonry>
 			</ResponsiveMasonry>
 		</div>

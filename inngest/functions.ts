@@ -10,7 +10,7 @@ import path from 'path';
 import os from 'os';
 import { decrypt } from 'node-qpdf2';
 import cloudinary from '@/lib/cloudinary';
-import { updateStatus } from '@/actions/server';
+import { deleteOnCloudinary, updateStatus } from '@/actions/server';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -110,7 +110,7 @@ export const processStatement = inngest.createFunction(
 	{ id: 'process-bank-statement', retries: 2 },
 	{ event: 'statement/uploaded' },
 	async ({ event, step }) => {
-		const { fileUrl, sessionId, password } = event.data;
+		const { fileUrl, sessionId, password, publicId, isDemo } = event.data;
 
 		await updateStatus('Submitted', sessionId);
 		try {
@@ -170,7 +170,7 @@ export const processStatement = inngest.createFunction(
 							},
 						);
 
-						return uploadResult.secure_url;
+						return uploadResult;
 					} finally {
 						await Promise.allSettled([
 							fs.unlink(tempInputPath),
@@ -179,7 +179,8 @@ export const processStatement = inngest.createFunction(
 					}
 				},
 			);
-			// 1. INITIATE PARSE JOB
+
+			//  INITIATE PARSE JOB
 			const jobId = await step.run('initiate-llamaparse', async () => {
 				const response = await fetch(
 					'https://api.cloud.llamaindex.ai/api/v2/parse',
@@ -190,7 +191,7 @@ export const processStatement = inngest.createFunction(
 							'Content-Type': 'application/json',
 						},
 						body: JSON.stringify({
-							source_url: processedFileUrl,
+							source_url: processedFileUrl.secure_url,
 							tier: 'cost_effective',
 							version: 'latest',
 						}),
@@ -282,12 +283,16 @@ export const processStatement = inngest.createFunction(
 				});
 			});
 
-			await updateStatus('Complete', sessionId);
+			// await updateStatus('Complete', sessionId);
 
 			await inngest.send({
 				name: 'extract/additional',
 				data: { rawResults: markdownOutput, cleanTransactions, sessionId },
 			});
+			if (!isDemo) {
+				await deleteOnCloudinary(processedFileUrl.public_id);
+				await deleteOnCloudinary(publicId);
+			}
 
 			return { status: 'SUCCESS' };
 		} catch (err) {
