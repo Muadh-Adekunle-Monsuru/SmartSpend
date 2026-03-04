@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Raleway } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { ConvexClientProvider } from './ConvexClientProvider';
-
+import { Analytics } from '@vercel/analytics/next';
 const raleway = Raleway({ subsets: ['latin'], variable: '--font-sans' });
 
 const geistSans = Geist({
@@ -32,6 +32,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
+				<Analytics />
 				<ConvexClientProvider>{children}</ConvexClientProvider>
 				<Toaster position='top-center' />
 			</body>

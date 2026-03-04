@@ -16,7 +16,7 @@ export default function ClosingBalance({
 				Closing Balance
 			</h3>
 			<p className='text-xs text-gray-700 uppercase tracking-wider mb-4'>
-				Date: {sortedTransactions[sortedTransactions.length - 1].date}
+				Date: {sortedTransactions[sortedTransactions.length - 1]?.date}
 			</p>
 			<p className='text-4xl font-black text-black'>
 				₦

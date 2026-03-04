@@ -30,7 +30,7 @@ export default function LoadingState({
 				</p>
 			</div>
 
-			<div className='mb-4 w-full'>
+			<div className='mb-4 w-72'>
 				<div className='w-full h-10 bg-white border-4 border-black overflow-hidden mb-4'>
 					<div
 						className='h-full bg-orange-600 transition-all duration-700 ease-in-out'
@@ -50,7 +50,7 @@ export default function LoadingState({
 
 			{/* Info Text */}
 			<p className='text-xs font-black uppercase tracking-widest text-center text-gray-700'>
-				Processing your bank statement
+				Processing statements may take a few minutes.
 			</p>
 		</div>
 	);

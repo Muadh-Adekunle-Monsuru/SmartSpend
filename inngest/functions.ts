@@ -192,7 +192,7 @@ export const processStatement = inngest.createFunction(
 						},
 						body: JSON.stringify({
 							source_url: processedFileUrl.secure_url,
-							tier: 'cost_effective',
+							tier: 'fast',
 							version: 'latest',
 						}),
 					},

@@ -22,12 +22,12 @@ export default function TotalIncome({
 				Total Income
 			</h3>
 			<p>
-				From: {creditTransactions[0].date} to{' '}
-				{creditTransactions[creditTransactions.length - 1].date}{' '}
+				From: {creditTransactions[0]?.date} to{' '}
+				{creditTransactions[creditTransactions?.length - 1]?.date}{' '}
 			</p>
 			<div className='space-y-2 mb-4'>
 				<p className='text-xs text-gray-700 font-black'>
-					{creditTransactions.length} Transactions
+					{creditTransactions?.length} Transactions
 				</p>
 				<p className='text-4xl font-black text-green-600 '>
 					₦
