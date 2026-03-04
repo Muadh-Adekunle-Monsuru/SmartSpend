@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+---
 
-## Getting Started
+# SmartSpend
 
-First, run the development server:
+A modern **Next.js** application powered by Convex, Inngest, and AI.
+
+---
+
+## 🚀 Tech Stack
+
+* **Framework:** Next.js (App Router)
+* **Backend & Database:** Convex
+* **Background Jobs:** Inngest
+* **Media Storage:** Cloudinary
+* **AI Integration:** Google Gemini, LlamaCloud, AI Gateway
+
+---
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+* **Node.js** (v18 or higher recommended)
+* **npm**, **yarn**, **pnpm**, or **bun**
+
+---
+
+## 🛠️ Local Development Setup
+
+Follow these steps to get the project running locally.
+
+---
+
+### 1️⃣ Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/smartspend.git
+cd smartspend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2️⃣ Install Dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+### 3️⃣ Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file in the root directory of the project.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Populate it with the following variables:
 
-## Deploy on Vercel
+```env
+# --- Cloudinary (Media Management) ---
+# Get these from your Cloudinary Dashboard
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+NEXT_PUBLIC_CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# --- AI & LLM Services ---
+# LlamaCloud
+LLAMA_CLOUD_API_KEY=
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# AI Gateway (e.g., Cloudflare / Portkey)
+AI_GATEWAY_API_KEY=
+
+# Google Gemini
+GEMINI_API_KEY=
+
+# --- Convex (Backend / Database) ---
+# NOTE: Running `npx convex dev` will typically auto-populate these
+CONVEX_DEPLOYMENT=
+NEXT_PUBLIC_CONVEX_URL=
+NEXT_PUBLIC_CONVEX_SITE_URL=
+```
+
+---
+
+### 4️⃣ Run Development Servers
+
+This architecture requires running **Next.js**, **Convex**, and **Inngest** simultaneously.
+
+Open **three separate terminal windows** in the project root:
+
+---
+
+#### 🖥 Terminal 1 — Start Convex Backend
+
+```bash
+npx convex dev
+```
+
+If this is your first time running Convex, you’ll be prompted to log in.
+Convex will automatically configure your `.env.local` with development deployment keys.
+
+---
+
+#### 🖥 Terminal 2 — Start Inngest Dev Server
+
+```bash
+npx --ignore-scripts=false inngest-cli@latest dev
+```
