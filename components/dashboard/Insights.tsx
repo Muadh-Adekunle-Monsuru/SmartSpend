@@ -54,7 +54,7 @@ export default function Insights({ insights }: InsightsProps) {
 					<span>
 						Kindly note that these are AI-generated insights to help you track
 						your spending and should not be taken as professional financial
-						advice.
+						advice
 					</span>
 				</p>
 			</div>
