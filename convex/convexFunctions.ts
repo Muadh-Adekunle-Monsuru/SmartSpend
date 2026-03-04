@@ -91,3 +91,22 @@ export const getRecordBySession = query({
 			.first();
 	},
 });
+
+export const clearSession = mutation({
+	args: {
+		sessionId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const existingRecord = await ctx.db
+			.query('transactions')
+			.withIndex('by_sessionId', (q) => q.eq('sessionId', args.sessionId))
+			.first();
+
+		if (existingRecord) {
+			await ctx.db.delete(existingRecord._id);
+			return { success: true };
+		}
+
+		return { success: true, action: 'created' };
+	},
+});

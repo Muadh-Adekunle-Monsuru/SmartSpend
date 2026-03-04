@@ -13,7 +13,7 @@ export default async function Page() {
 
 	return (
 		<div className=' flex flex-col min-h-screen bg-amber-50'>
-			<DashboardHeader />
+			<DashboardHeader sessionId={sessionId} />
 			<DashboardComponent sessionId={sessionId} />
 		</div>
 	);

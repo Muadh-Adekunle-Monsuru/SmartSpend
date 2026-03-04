@@ -74,7 +74,7 @@ const NigeriaTaxCalculator = () => {
 					>
 						Monthly Gross Income
 					</label>
-					<Input
+					<input
 						id='gross'
 						type='number'
 						placeholder='e.g. 500000'

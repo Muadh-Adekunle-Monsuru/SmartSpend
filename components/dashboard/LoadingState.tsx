@@ -31,7 +31,7 @@ export default function LoadingState({
 			</div>
 
 			<div className='mb-4 w-full'>
-				<div className='w-full h-4 bg-white border-4 border-black overflow-hidden mb-4'>
+				<div className='w-full h-10 bg-white border-4 border-black overflow-hidden mb-4'>
 					<div
 						className='h-full bg-orange-600 transition-all duration-700 ease-in-out'
 						style={{ width: `${currentStage.progress}%` }}
@@ -50,7 +50,7 @@ export default function LoadingState({
 
 			{/* Info Text */}
 			<p className='text-xs font-black uppercase tracking-widest text-center text-gray-700'>
-				Processing your bank statement with AI
+				Processing your bank statement
 			</p>
 		</div>
 	);

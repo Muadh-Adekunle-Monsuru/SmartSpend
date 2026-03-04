@@ -90,3 +90,9 @@ export const useDemoData = async (sessionId: string) => {
 		},
 	});
 };
+
+export const ClearData = async (sessionId: string) => {
+	await fetchMutation(api.convexFunctions.clearSession, {
+		sessionId,
+	});
+};

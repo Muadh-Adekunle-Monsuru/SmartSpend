@@ -51,7 +51,7 @@ export default function UploadCard({
 	};
 
 	return (
-		<div className='w-full max-w-xl border-4 border-black bg-white p-8'>
+		<div className=' max-w-xl border-4 border-black bg-white p-8'>
 			<div className='mb-8'>
 				<h2 className='text-3xl md:text-4xl font-black tracking-tight mb-3'>
 					Upload your bank statement

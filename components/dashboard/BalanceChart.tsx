@@ -96,8 +96,7 @@ export function BalanceChart({ rawResult }: { rawResult?: Transaction[] }) {
 							type='monotone'
 							stroke={`#ea580c`}
 							strokeWidth={4}
-							dot={{ fill: '#ea580c', r: 6, strokeWidth: 2, stroke: '#000000' }}
-							activeDot={{ r: 8 }}
+							dot={false}
 						/>
 					</LineChart>
 				</ChartContainer>
