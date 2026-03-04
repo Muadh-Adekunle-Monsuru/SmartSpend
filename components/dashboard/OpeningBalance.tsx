@@ -1,10 +1,3 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '../ui/card';
 import { Transaction } from '@/lib/utils';
 
 export default function OpeningBalance({
@@ -18,23 +11,23 @@ export default function OpeningBalance({
 		) || [];
 
 	return (
-		<Card className='w-full'>
-			<CardHeader>
-				<CardTitle>Opening Balance</CardTitle>
-				<CardDescription>Date: {sortedTransactions[0].date}</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<p className='text-xl font-bold '>
-					₦
-					{Math.abs(sortedTransactions[0].balance || 0).toLocaleString(
-						undefined,
-						{
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2,
-						},
-					)}
-				</p>
-			</CardContent>
-		</Card>
+		<div className='border-4 border-black p-6 bg-white'>
+			<h3 className='text-xs font-black tracking-widest uppercase mb-6 border-b-4 border-black pb-4 text-black'>
+				Opening Balance
+			</h3>
+			<p className='text-xs text-gray-700 uppercase tracking-wider mb-4'>
+				Date: {sortedTransactions[0].date}
+			</p>
+			<p className='text-4xl font-black text-black'>
+				₦
+				{Math.abs(sortedTransactions[0].balance || 0).toLocaleString(
+					undefined,
+					{
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2,
+					},
+				)}
+			</p>
+		</div>
 	);
 }

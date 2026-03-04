@@ -1,8 +1,6 @@
 'use client';
 import { Transaction } from '@/lib/utils';
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Pie, PieChart, Cell } from 'recharts'; // Added Cell for individual coloring
+import { Pie, PieChart } from 'recharts'; // Added Cell for individual coloring
 
 import {
 	ChartContainer,
@@ -21,7 +19,6 @@ export default function GroupByCategory({
 	interface CategoryTotals {
 		[key: string]: number;
 	}
-
 	const groups =
 		rawResult?.reduce((group: CategoryTotals, trans) => {
 			const category = trans.category || 'Uncategorized';
@@ -55,14 +52,14 @@ export default function GroupByCategory({
 	});
 
 	return (
-		<Card className='w-full flex flex-col'>
-			<CardHeader>
-				<CardTitle>Category Breakdown</CardTitle>
-			</CardHeader>
-			<CardContent className='flex-1 pb-0'>
+		<div className='border-4 border-black p-6 bg-white'>
+			<h2 className='text-xs font-black tracking-widest uppercase border-b-4 border-black pb-4 text-black'>
+				Category Breakdown
+			</h2>
+			<div className='w-full'>
 				<ChartContainer
 					config={dynamicConfig}
-					className='mx-auto aspect-square max-h-[450px]'
+					className='mx-auto aspect-square max-h-[350px]'
 				>
 					<PieChart>
 						<ChartTooltip
@@ -72,9 +69,12 @@ export default function GroupByCategory({
 						<Pie
 							data={chartData}
 							dataKey='value'
-							label
 							nameKey={'browser'}
-							strokeWidth={5}
+							strokeWidth={2}
+							innerRadius={60}
+							outerRadius={100}
+							paddingAngle={2}
+							stroke='#000000'
 						/>
 						<ChartLegend
 							content={<ChartLegendContent nameKey='browser' />}
@@ -82,7 +82,7 @@ export default function GroupByCategory({
 						/>
 					</PieChart>
 				</ChartContainer>
-			</CardContent>
-		</Card>
+			</div>
+		</div>
 	);
 }

@@ -1,12 +1,4 @@
 import { Transaction } from '@/lib/utils';
-import React from 'react';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '../ui/card';
 
 export default function LargestDebit({
 	rawResult,

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import {
 	Card,
@@ -34,17 +34,14 @@ export function BalanceChart({ rawResult }: { rawResult?: Transaction[] }) {
 	const total = rawResult?.length;
 
 	return (
-		<Card className='py-4 sm:py-0 w-full'>
-			<CardHeader className='flex flex-col items-stretch border-b p-0! sm:flex-row'>
-				<div className='flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0'>
-					<CardTitle>Balance Chart </CardTitle>
-					<CardDescription></CardDescription>
-				</div>
-			</CardHeader>
-			<CardContent className='px-2 sm:p-6'>
+		<div className='border-4 border-black p-6 bg-white'>
+			<h2 className='text-xs font-black tracking-widest uppercase mb-6 border-b-4 border-black pb-4 text-black'>
+				Balance Chart
+			</h2>
+			<div className='w-full h-48 flex items-center justify-center'>
 				<ChartContainer
 					config={chartConfig}
-					className='aspect-auto h-[250px] w-full'
+					className='aspect-auto h-48 w-full'
 				>
 					<LineChart
 						accessibilityLayer
@@ -54,10 +51,16 @@ export function BalanceChart({ rawResult }: { rawResult?: Transaction[] }) {
 							right: 12,
 						}}
 					>
-						<CartesianGrid vertical={false} />
+						<CartesianGrid
+							vertical={false}
+							strokeDasharray='0'
+							stroke='#000000'
+						/>
 						<XAxis
 							dataKey='date'
-							tickLine={false}
+							stroke='#666666'
+							tick={{ fontSize: 12, fontWeight: 700, fill: '#000000' }}
+							tickLine={true}
 							axisLine={false}
 							tickMargin={8}
 							minTickGap={32}
@@ -68,6 +71,10 @@ export function BalanceChart({ rawResult }: { rawResult?: Transaction[] }) {
 									day: 'numeric',
 								});
 							}}
+						/>{' '}
+						<YAxis
+							stroke='#666666'
+							tick={{ fontSize: 12, fontWeight: 700, fill: '#000000' }}
 						/>
 						<ChartTooltip
 							content={
@@ -87,13 +94,14 @@ export function BalanceChart({ rawResult }: { rawResult?: Transaction[] }) {
 						<Line
 							dataKey={'balance'}
 							type='monotone'
-							stroke={`var(--color-balance)`}
-							strokeWidth={2}
-							dot={false}
+							stroke={`#ea580c`}
+							strokeWidth={4}
+							dot={{ fill: '#ea580c', r: 6, strokeWidth: 2, stroke: '#000000' }}
+							activeDot={{ r: 8 }}
 						/>
 					</LineChart>
 				</ChartContainer>
-			</CardContent>
-		</Card>
+			</div>
+		</div>
 	);
 }

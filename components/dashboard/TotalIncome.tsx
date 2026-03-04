@@ -1,11 +1,3 @@
-import React from 'react';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '../ui/card';
 import { Transaction } from '@/lib/utils';
 
 export default function TotalIncome({

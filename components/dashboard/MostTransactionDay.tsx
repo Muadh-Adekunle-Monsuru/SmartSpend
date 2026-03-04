@@ -1,12 +1,4 @@
 import { useMemo } from 'react';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '../ui/card';
-import { CalendarDays, Activity } from 'lucide-react';
 
 type Transaction = {
 	amount: number;
@@ -56,19 +48,17 @@ export default function MostTransactionDay({
 
 	if (!maxDate) {
 		return (
-			<Card className='w-full max-w-2xl'>
-				<CardHeader>
-					<CardTitle>Busiest Day</CardTitle>
-					<CardDescription>
-						Day with the highest volume of transactions
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<p className='text-sm text-slate-500 text-center py-4'>
-						No transaction data available yet.
-					</p>
-				</CardContent>
-			</Card>
+			<div className='border-4 border-black p-6 bg-white'>
+				<h3 className='text-xs font-black tracking-widest uppercase mb-6 border-b-4 border-black pb-4 text-black'>
+					Busiest Day
+				</h3>
+				<p className='text-xs text-gray-700 uppercase tracking-wider mb-4'>
+					The day with the highest volume of transaction activity
+				</p>
+				<p className='text-sm text-slate-500 text-center py-4'>
+					No transaction data available yet.
+				</p>
+			</div>
 		);
 	}
 
@@ -79,38 +69,32 @@ export default function MostTransactionDay({
 	});
 
 	return (
-		<Card className='w-full max-w-2xl'>
-			<CardHeader className='pb-4'>
-				<CardTitle className='flex items-center gap-2'>
-					<CalendarDays className='w-5 h-5 text-indigo-600' />
-					Busiest Day
-				</CardTitle>
-				<CardDescription>
-					The day with the highest volume of transaction activity
-				</CardDescription>
-			</CardHeader>
+		<div className='border-4 border-black p-6 bg-white'>
+			<h3 className='text-xs font-black tracking-widest uppercase mb-6 border-b-4 border-black pb-4 text-black'>
+				Busiest Day
+			</h3>
+			<p className='text-xs text-gray-700 uppercase tracking-wider mb-4'>
+				The day with the highest volume of transaction activity
+			</p>
 
-			<CardContent className='space-y-6'>
-				{/* Highlight Banner */}
-				<div className='flex items-center justify-between p-4 bg-indigo-50/50 rounded-xl border border-indigo-100'>
+			<div className='space-y-6'>
+				<div className='grid grid-cols-2 gap-4 border-b-4 border-black pb-6'>
 					<div>
-						<p className='text-sm font-medium text-indigo-600 mb-1'>Date</p>
-						<p className='text-2xl font-bold text-slate-900'>{formattedDate}</p>
+						<p className='text-xs text-gray-700 uppercase tracking-wider mb-2'>
+							Date
+						</p>
+						<p className='text-2xl font-black text-black'>{formattedDate}</p>
 					</div>
-					<div className='text-right'>
-						<p className='text-sm font-medium text-indigo-600 mb-1'>
+					<div>
+						<p className='text-xs text-gray-700 uppercase tracking-wider mb-2'>
 							Transactions
 						</p>
-						<div className='flex items-center justify-end gap-1.5 text-2xl font-bold text-slate-900'>
-							<Activity className='w-5 h-5 text-indigo-400' />
-							{maxCount}
-						</div>
+						<p className='text-2xl font-black text-black'>{maxCount}</p>
 					</div>
 				</div>
 
-				{/* Transaction List for that specific day */}
-				<div className='space-y-3'>
-					<h4 className='text-sm font-medium text-slate-700'>
+				<div>
+					<h4 className='text-xs font-black uppercase tracking-widest mb-4 border-b-2 border-black pb-3 text-black'>
 						Activity on this day
 					</h4>
 
@@ -118,18 +102,16 @@ export default function MostTransactionDay({
 						{topDayTransactions.map((trans, index) => (
 							<div
 								key={`${trans.description}-${index}`}
-								className='flex items-center justify-between p-3 text-sm bg-white border border-slate-100 rounded-lg shadow-sm'
+								className='border-l-4 border-neutral-600 pl-3'
 							>
-								<div className='flex flex-col'>
-									<span className='font-medium text-slate-900 line-clamp-1'>
-										{trans.description}
-									</span>
-									<span className='text-xs text-slate-500'>
-										{trans.category}
-									</span>
-								</div>
+								<span className='text-sm font-black mb-1 text-black line-clamp-1'>
+									{trans.description}
+								</span>
+								<span className='text-sm text-slate-600 font-black'>
+									{trans.category}
+								</span>
 								<div
-									className={`font-semibold whitespace-nowrap ml-4 ${
+									className={`text-xs text-gray-700 uppercase mt-1 whitespace-nowrap ${
 										trans.type === 'credit'
 											? 'text-green-600'
 											: 'text-slate-900'
@@ -145,7 +127,7 @@ export default function MostTransactionDay({
 						))}
 					</div>
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</div>
 	);
 }

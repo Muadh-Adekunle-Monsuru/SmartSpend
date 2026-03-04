@@ -1,16 +1,6 @@
+import { uploadStatementAction, useDemoData } from '@/actions/server';
 import { useState } from 'react';
 import { toast } from 'sonner'; // Assuming you use sonner based on your toast calls
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { uploadStatementAction, useDemoData } from '@/actions/server';
 
 export default function UploadCard({
 	sessionId,

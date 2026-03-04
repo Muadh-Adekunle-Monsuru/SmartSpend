@@ -12,10 +12,10 @@ export function DashboardHeader() {
 				</div>
 				<div className='flex items-center gap-6'>
 					<button className='text-xs font-black uppercase tracking-widest border-4 border-black px-4 py-2 hover:bg-black hover:text-amber-50 transition-all'>
-						Settings
+						Print
 					</button>
 					<button className='text-xs font-black uppercase tracking-widest bg-red-600 text-white border-4 border-black px-4 py-2 hover:bg-red-700 transition-all'>
-						Export
+						Clear
 					</button>
 				</div>
 			</div>

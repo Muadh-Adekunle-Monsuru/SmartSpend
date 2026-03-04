@@ -1,7 +1,5 @@
 import { DashboardHeader } from '@/components/DasboardHeader';
 import DashboardComponent from '@/components/dashboard/DashboardComponent';
-import LoadingComponent from '@/components/dashboard/DashboardComponent';
-import UploadCard from '@/components/dashboard/UploadCard';
 
 import { cookies } from 'next/headers';
 

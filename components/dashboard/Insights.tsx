@@ -1,12 +1,4 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import { Sparkles, Info } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface InsightsProps {
 	insights?: { description: string; title: string }[];
@@ -15,9 +7,9 @@ interface InsightsProps {
 export default function Insights({ insights }: InsightsProps) {
 	return (
 		<div className='border-4 border-black p-6 bg-white'>
-			<div className='flex items-center gap-2'>
+			<div className='flex items-center gap-2 w-full border-b-4 border-black pb-4 mb-6'>
 				<Sparkles className='w-5 h-5 text-indigo-600' />
-				<h2 className='text-xs font-black tracking-widest uppercase mb-6 border-b-4 border-black pb-4 text-black'>
+				<h2 className='text-xs font-black tracking-widest uppercase  text-black '>
 					Smart Insights
 				</h2>
 			</div>

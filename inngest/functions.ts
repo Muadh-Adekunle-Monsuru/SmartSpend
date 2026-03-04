@@ -283,7 +283,7 @@ export const processStatement = inngest.createFunction(
 				});
 			});
 
-			// await updateStatus('Complete', sessionId);
+			await updateStatus('Complete', sessionId);
 
 			await inngest.send({
 				name: 'extract/additional',

@@ -1,18 +1,16 @@
 import { Transaction } from '@/lib/utils';
-import React from 'react';
+import { BalanceChart } from './BalanceChart';
+import ClosingBalance from './ClosingBalance';
+import GroupByCategory from './GroupByCategory';
+import Insights from './Insights';
+import LargestDebit from './LargestDebit';
+import LargestCredit from './LargestIncome';
+import MostTransactionDay from './MostTransactionDay';
+import OpeningBalance from './OpeningBalance';
 import RawResultDisplay from './RawResultDisplay';
+import NigeriaTaxCalculator from './TaxCard';
 import TotalExpenses from './TotalExpenses';
 import TotalIncome from './TotalIncome';
-import LargestDebit from './LargestDebit';
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-import LargestCredit from './LargestIncome';
-import GroupByCategory from './GroupByCategory';
-import OpeningBalance from './OpeningBalance';
-import ClosingBalance from './ClosingBalance';
-import { BalanceChart } from './BalanceChart';
-import Insights from './Insights';
-import MostTransactionDay from './MostTransactionDay';
-import NigeriaTaxCalculator from './TaxCard';
 
 export default function ResultDashboard({
 	rawResult,

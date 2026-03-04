@@ -1,6 +1,4 @@
 import BlobBGGradient from '@/components/BlobBGGradient';
-import { ComponentExample } from '@/components/component-example';
-import MeshBG from '@/components/MeshGradient';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
