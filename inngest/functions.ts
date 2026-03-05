@@ -126,7 +126,13 @@ export const processStatement = inngest.createFunction(
 						os.tmpdir(),
 						`output-${Date.now()}.pdf`,
 					);
+					console.log('TMP dir:', os.tmpdir());
 
+					try {
+						console.log(execSync('which qpdf').toString());
+					} catch {
+						console.log('qpdf not installed');
+					}
 					try {
 						const response = await fetch(fileUrl);
 						const buffer = Buffer.from(await response.arrayBuffer());
@@ -134,10 +140,6 @@ export const processStatement = inngest.createFunction(
 
 						if (password) {
 							try {
-								console.log(
-									'qpdf version:',
-									execSync('qpdf --version').toString(),
-								);
 								await decrypt({
 									input: tempInputPath,
 									password,
