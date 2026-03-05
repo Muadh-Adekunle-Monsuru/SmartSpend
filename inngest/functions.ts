@@ -118,71 +118,30 @@ export const processStatement = inngest.createFunction(
 			const processedFileUrl = await step.run(
 				'download-and-decrypt',
 				async () => {
-					const tempInputPath = path.join(
-						os.tmpdir(),
-						`input-${Date.now()}.pdf`,
-					);
-					const tempOutputPath = path.join(
-						os.tmpdir(),
-						`output-${Date.now()}.pdf`,
-					);
-					console.log('TMP dir:', os.tmpdir());
-
 					try {
-						console.log(execSync('which qpdf').toString());
-					} catch {
-						console.log('qpdf not installed');
-					}
-					try {
-						const response = await fetch(fileUrl);
-						const buffer = Buffer.from(await response.arrayBuffer());
-						await fs.writeFile(tempInputPath, buffer);
-
 						if (password) {
-							try {
-								await decrypt({
-									input: tempInputPath,
-									password,
-									output: tempOutputPath,
-								});
-							} catch (err) {
-								const message = String(err);
+							const res = await fetch(
+								'https://api.pdf.co/v1/pdf/security/remove',
+								{
+									method: 'POST',
+									headers: {
+										'x-api-key': process.env.PDFCO_API_KEY!,
+										'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({
+										url: fileUrl,
+										password: password,
+									}),
+								},
+							);
 
-								// Only ignore if output file actually exists
-								const outputExists = await fs
-									.stat(tempOutputPath)
-									.then(() => true)
-									.catch(() => false);
-
-								if (
-									message.includes('operation succeeded with warnings') &&
-									outputExists
-								) {
-									console.warn('PDF repaired successfully. Continuing.');
-								} else {
-									throw new Error(
-										'Decryption failed: invalid password or corrupted file.',
-									);
-								}
-							}
+							const data = await res.json();
+							return data.url;
 						} else {
-							await fs.copyFile(tempInputPath, tempOutputPath);
+							return fileUrl;
 						}
-
-						const uploadResult = await cloudinary.uploader.upload(
-							tempOutputPath,
-							{
-								resource_type: 'raw',
-								folder: 'bank_statements/decrypted',
-							},
-						);
-
-						return uploadResult;
-					} finally {
-						await Promise.allSettled([
-							fs.unlink(tempInputPath),
-							fs.unlink(tempOutputPath),
-						]);
+					} catch (err) {
+						throw new Error('Error decrypting your document');
 					}
 				},
 			);
@@ -198,7 +157,7 @@ export const processStatement = inngest.createFunction(
 							'Content-Type': 'application/json',
 						},
 						body: JSON.stringify({
-							source_url: processedFileUrl.secure_url,
+							source_url: processedFileUrl,
 							tier: 'fast',
 							version: 'latest',
 						}),
@@ -208,7 +167,7 @@ export const processStatement = inngest.createFunction(
 				return data.id;
 			});
 
-			await updateStatus('Parsing', sessionId);
+			// await updateStatus('Parsing', sessionId);
 
 			// 2. POLLING LOOP (Wait for Completion)
 			let status = 'PENDING';
@@ -230,8 +189,6 @@ export const processStatement = inngest.createFunction(
 				});
 
 				const status = result.job.status;
-
-				console.log('LlamaParse status:', status);
 
 				if (status === 'COMPLETED') {
 					parseResult = result;
@@ -260,7 +217,7 @@ export const processStatement = inngest.createFunction(
 			// // 3. Handing off to the Cleaning Agent
 			const cleaningAgent = async (markdown: string) => {
 				const prompt = `
-				${agent_prompt} 
+				${agent_prompt}
 				Data:
 			    ${markdown}
 				`;
@@ -296,8 +253,8 @@ export const processStatement = inngest.createFunction(
 				name: 'extract/additional',
 				data: { rawResults: markdownOutput, cleanTransactions, sessionId },
 			});
+
 			if (!isDemo) {
-				await deleteOnCloudinary(processedFileUrl.public_id);
 				await deleteOnCloudinary(publicId);
 			}
 
