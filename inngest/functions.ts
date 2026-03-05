@@ -11,6 +11,7 @@ import os from 'os';
 import { decrypt } from 'node-qpdf2';
 import cloudinary from '@/lib/cloudinary';
 import { deleteOnCloudinary, updateStatus } from '@/actions/server';
+import { execSync } from 'child_process';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -133,6 +134,10 @@ export const processStatement = inngest.createFunction(
 
 						if (password) {
 							try {
+								console.log(
+									'qpdf version:',
+									execSync('qpdf --version').toString(),
+								);
 								await decrypt({
 									input: tempInputPath,
 									password,
