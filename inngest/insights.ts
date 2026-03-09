@@ -55,11 +55,13 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 export const extractAdditionalData = inngest.createFunction(
 	{
 		id: 'extract-additional-data',
-		retries: 1,
+		retries: 2,
 	},
 	{ event: 'extract/additional' },
 	async ({ event, step }) => {
-		const { rawResults, cleanTransactions, sessionId } = event.data;
+		const { cleanTransactions, sessionId } = event.data;
+
+		await step.sleep('wait-before-retry', '15s');
 
 		const model = genAI.getGenerativeModel({
 			model: 'gemini-2.5-flash',

@@ -251,7 +251,7 @@ export const processStatement = inngest.createFunction(
 
 			await inngest.send({
 				name: 'extract/additional',
-				data: { rawResults: markdownOutput, cleanTransactions, sessionId },
+				data: {  cleanTransactions, sessionId },
 			});
 
 			if (!isDemo) {

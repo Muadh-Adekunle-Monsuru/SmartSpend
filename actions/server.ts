@@ -2,6 +2,8 @@
 import { api } from '@/convex/_generated/api';
 import { inngest } from '@/inngest/client';
 import cloudinary from '@/lib/cloudinary';
+import { demoData } from '@/lib/demo-data';
+import { demoInsights } from '@/lib/demo-insights';
 import { fetchMutation } from 'convex/nextjs';
 export async function uploadStatementAction(
 	formData: FormData,
@@ -79,16 +81,17 @@ export const deleteOnCloudinary = async (publicId: string) => {
 };
 
 export const useDemoData = async (sessionId: string) => {
-	await inngest.send({
-		name: 'statement/uploaded',
-		data: {
-			fileUrl:
-				'https://res.cloudinary.com/dzrkcnt5h/image/upload/v1772541563/Opay_kojjdf.pdf',
-			sessionId,
-			publicId: 'Opay_kojjdf',
-			isDemo: true,
-		},
+	await updateStatus('Submitted', sessionId);
+	await fetchMutation(api.convexFunctions.saveCategorized, {
+		sessionId,
+		transactions: demoData,
 	});
+	await updateStatus('Complete', sessionId);
+	await fetchMutation(api.convexFunctions.setInsights, {
+		insights: demoInsights,
+		sessionId,
+	});
+	return { success: true };
 };
 
 export const ClearData = async (sessionId: string) => {
